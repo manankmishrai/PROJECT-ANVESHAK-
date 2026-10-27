@@ -1,0 +1,49 @@
+# ---- Phase 1 (installed) ----
+streamlit>=1.38
+python-dotenv>=1.0
+pandas>=2.2
+pytest>=8.0
+
+# ---- Phase 2 (installed) ----
+# PyMuPDF is AGPL-licensed -- acceptable for this non-commercial academic
+# prototype, but flagged here for awareness before any future commercial use.
+PyMuPDF>=1.24
+pypdf>=4.0
+
+# ---- Phase 2 OCR fallback (OPTIONAL, not installed) ----
+# pytesseract>=0.3
+# pillow>=10.0
+
+# ---- Phase 3 (installed) ----
+PyYAML>=6.0
+rapidfuzz>=3.6
+python-dateutil>=2.9
+
+# ---- Phase 4 (install now) ----
+# RISK (disclosed): pyhanko pulls in compiled dependencies (cryptography,
+# oscrypto, asn1crypto). This is the main install risk on Python 3.14.
+# If `pip install` fails on this line specifically, comment it out and
+# re-run -- services/signature_service.py is written to gracefully report
+# "verification unavailable" (not a false pass/fail) when pyHanko is absent.
+pyhanko>=0.25.0
+
+# ---- Phase 6 (install now) ----
+# reportlab is pure-Python (no compiled/native dependencies), used for
+# PDF validation-report generation (Module I). Low install risk relative
+# to pyhanko/pyzbar above. Note (disclosed limitation): reportlab's
+# built-in base-14 fonts only cover Latin-1 text; non-Latin scripts
+# (e.g. Devanagari) are not rendered -- see services/report_service.py.
+reportlab>=4.0
+
+# ---- Phase 4 batch 2 (install now) -- RISK DISCLOSURE: both are new,
+# untested-in-this-environment compiled/native dependencies on Python
+# 3.14, same risk category as pyhanko last batch.
+#   - pyzbar: QR code decoding. Bundles a zbar DLL on Windows wheels,
+#     but this has not been confirmed in this environment.
+#   - qrcode: pure-Python QR *generation*, used only by one optional
+#     round-trip test to prove the decode pipeline end-to-end. Low risk.
+#   - Pillow: image handling required by pyzbar; may already be present
+#     transitively via PyMuPDF, pinned explicitly here for clarity.
+pyzbar>=0.1.9
+qrcode>=7.4
+Pillow>=10.0

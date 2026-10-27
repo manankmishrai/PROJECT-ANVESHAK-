@@ -1,0 +1,157 @@
+# Illustrative EoA demonstration rule pack.
+#
+# IMPORTANT: every clause_ref value below is a PLACEHOLDER label, not a
+# verified AICTE/APH Handbook clause number. All severities and
+# thresholds are demonstration defaults chosen for this prototype, not
+# official regulatory figures. This file must be reviewed against the
+# real, current APH before any production or regulatory use.
+
+rule_pack:
+  name: "eoa_illustrative"
+  version: "0.1.0"
+  description: >
+    Illustrative, non-authoritative deterministic validation rules for
+    Extension of Approval (EoA) applications, used to demonstrate the
+    Evidence-Ladder Scrutiny Copilot prototype end to end.
+
+rules:
+  - rule_id: "RULE-001"
+    name: "Missing required document"
+    description: "Flags checklist document types marked required that have not been uploaded."
+    rule_type: "missing_required_document"
+    applicable_doc_types: []
+    required_fields: []
+    severity: "high"
+    clause_ref: "ILLUSTRATIVE-CHECKLIST-1"
+    enabled: true
+    params: {}
+
+  - rule_id: "RULE-002"
+    name: "Missing required field"
+    description: "Flags documents where a required field could not be extracted."
+    rule_type: "missing_required_field"
+    applicable_doc_types:
+      - "affiliation_certificate"
+      - "fire_noc"
+      - "e_stamp"
+    required_fields:
+      - "institution_name"
+      - "certificate_number"
+    severity: "medium"
+    clause_ref: "ILLUSTRATIVE-FIELD-1"
+    enabled: true
+    params: {}
+
+  - rule_id: "RULE-003"
+    name: "Expired certificate"
+    description: "Flags documents whose extracted expiry date is before today."
+    rule_type: "expired_certificate"
+    applicable_doc_types:
+      - "affiliation_certificate"
+      - "fire_noc"
+      - "e_stamp"
+    required_fields:
+      - "expiry_date"
+    severity: "high"
+    clause_ref: "ILLUSTRATIVE-EXPIRY-1"
+    enabled: true
+    params: {}
+
+  - rule_id: "RULE-004"
+    name: "Invalid issue/expiry date relationship"
+    description: "Flags documents where the expiry date is not after the issue date."
+    rule_type: "invalid_date_range"
+    applicable_doc_types:
+      - "affiliation_certificate"
+      - "fire_noc"
+      - "e_stamp"
+    required_fields:
+      - "issue_date"
+      - "expiry_date"
+    severity: "medium"
+    clause_ref: "ILLUSTRATIVE-DATE-1"
+    enabled: true
+    params: {}
+
+  - rule_id: "RULE-005"
+    name: "Institution name mismatch across documents"
+    description: "Flags documents whose institution_name does not match an earlier document in the same application."
+    rule_type: "cross_document_field_mismatch"
+    applicable_doc_types: []
+    required_fields:
+      - "institution_name"
+    severity: "high"
+    clause_ref: "ILLUSTRATIVE-XDOC-1"
+    enabled: true
+    params:
+      field_name: "institution_name"
+      fuzzy: true
+
+  - rule_id: "RULE-006"
+    name: "Institution ID mismatch across documents"
+    description: "Flags documents whose institution_id does not match an earlier document in the same application."
+    rule_type: "cross_document_field_mismatch"
+    applicable_doc_types: []
+    required_fields:
+      - "institution_id"
+    severity: "high"
+    clause_ref: "ILLUSTRATIVE-XDOC-2"
+    enabled: true
+    params:
+      field_name: "institution_id"
+      fuzzy: false
+
+  - rule_id: "RULE-007"
+    name: "Duplicate certificate number across applications"
+    description: "Flags certificate numbers that also appear on a different application."
+    rule_type: "duplicate_certificate_number"
+    applicable_doc_types: []
+    required_fields:
+      - "certificate_number"
+    severity: "high"
+    clause_ref: "ILLUSTRATIVE-DUP-1"
+    enabled: true
+    params: {}
+
+  - rule_id: "RULE-008"
+    name: "Conflicting field values within a document"
+    description: "Flags fields with more than one distinct extracted value on the same document."
+    rule_type: "conflicting_field_values"
+    applicable_doc_types: []
+    required_fields:
+      - "certificate_number"
+      - "institution_name"
+      - "institution_id"
+    severity: "medium"
+    clause_ref: "ILLUSTRATIVE-CONFLICT-1"
+    enabled: true
+    params:
+      fields:
+        - "certificate_number"
+        - "institution_name"
+        - "institution_id"
+
+  - rule_id: "RULE-009"
+    name: "Duplicate uploaded file (SHA-256)"
+    description: "Flags documents that are byte-for-byte identical to another uploaded document."
+    rule_type: "duplicate_file_hash"
+    applicable_doc_types: []
+    required_fields: []
+    severity: "medium"
+    clause_ref: "ILLUSTRATIVE-DUPFILE-1"
+    enabled: true
+    params: {}
+
+  - rule_id: "RULE-010"
+    name: "Signature verification not yet performed"
+    description: "Records that cryptographic signature verification has not yet run for this document type."
+    rule_type: "missing_signature_info"
+    applicable_doc_types:
+      - "affiliation_certificate"
+      - "fire_noc"
+      - "e_stamp"
+    required_fields: []
+    severity: "low"
+    clause_ref: "ILLUSTRATIVE-SIG-1"
+    enabled: true
+    params: {}
